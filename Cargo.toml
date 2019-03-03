@@ -1,0 +1,25 @@
+[package]
+name = "onair-sonoff"
+version = "0.0.1"
+authors = ["Derek Anderson <derek@armyofevilrobots.com>"]
+edition = "2018"
+
+[dependencies]
+clap = "2.29"
+lazy_static = ">=1.2.0"
+log = "0.4"
+mqtt-protocol = "0.4.2"
+native-tls = ">=0.2"
+openssl = ">=0.10.4"
+pretty_env_logger = "0.3.0"
+reqwest = ">=0.9.10"
+serde = ">=1.0"
+serde_json = ">=1.0"
+serde_derive = ">=1.0"
+serde_urlencoded = ">=0.5"
+toml = "0.4.5"
+rand = "0.6.5"
+mdns="0.3.1"
+url="1.7.2"
+dns-lookup="1.0.0"
+cpal = "0.8.2"
