@@ -1,7 +1,7 @@
 On-Air - Sonoff
 ===============
 
-[![Oh my god, it builds. That's amazing. I'm not even mad.](https://travis-ci.org/armyofevilrobots/rust-plantronics.svg?branch=master)](https://travis-ci.org/armyofevilrobots/rust-plantronics)
+[![Oh my god, it builds. That's amazing. I'm not even mad.](https://travis-ci.org/armyofevilrobots/onair-sonoff.svg?branch=master)](https://travis-ci.org/armyofevilrobots/onair-sonoff)
 
 Y'know when you walk away from the meeting you're currently in (not that I'd EVER be that irresponsible... ahem). 
 And then you're running the coffee machine, grinding the beans, clanking around gently swearing to yourself
