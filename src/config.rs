@@ -25,6 +25,12 @@ lazy_static! {
                 .takes_value(true),
         )
         .arg(
+            Arg::with_name("device")
+                .short("d")
+                .long("device")
+                .help("ALSA device to monitor, ie:  ")
+        )
+        .arg(
             Arg::with_name("tasmota")
                 .short("T")
                 .long("tasmota")
