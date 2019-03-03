@@ -1,6 +1,6 @@
 [package]
 name = "onair-sonoff"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Derek Anderson <derek@armyofevilrobots.com>"]
 edition = "2018"
 
