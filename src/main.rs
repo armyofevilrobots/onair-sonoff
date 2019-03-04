@@ -80,10 +80,10 @@ fn tasmota_set_state(url: &str, state: bool) -> Result<bool>{
     }
 }
 
-fn iterate_devices() -> Vec<String>{
-    let mut out:Vec<String> = Vec::new();
+fn iterate_devices() -> Vec<cpal::Device>{
+    let mut out:Vec<cpal::Device> = Vec::new();
     for device in cpal::devices(){
-        out.push(device.name());
+        out.push(device);
     }
     out
 }
@@ -103,16 +103,16 @@ fn main() {
 
     loop {
         let _ = config::CONFIG; // Force immediate resolution, in case we need to print help...
+        //let devices = iterate_devices();
         if config::CONFIG.is_present("list_devices"){
-            for item in iterate_devices(){
-                info!("Found device {}", &item);
+            let devices = iterate_devices();
+            for item in &devices{
+                if item.name().starts_with("sysdefault") {
+                    info!("Found device {}", &item.name());
+                }
             }
+            std::process::exit(0);
         }
-
-        let devices = iterate_devices();
-
-
-
 
         let tasmota = match rewrite_url_with_mdns(
             config::CONFIG
@@ -129,11 +129,29 @@ fn main() {
         };
 
         let event_loop = EventLoop::new();
-        let device = cpal::default_input_device().expect("Nope!");
+        let mut device = cpal::default_input_device().expect("Nope!");
+        let preferred_device_name = config::CONFIG.value_of("device").unwrap(); //_or("default");
+        info!("Searching for device {}", preferred_device_name);
+        if preferred_device_name != "default"{
+            let devices = iterate_devices();
+            for dev in devices {
+                if dev.name() == preferred_device_name{
+                    device = dev;
+                }
+            }
+        }            
+
         info!("device: {}", device.name());
+        // for format in device.supported_input_formats().unwrap(){
+        //     info!("rate: {}-{}", format.min_sample_rate.0, format.max_sample_rate.0);
+        // }
+        let rate = config::CONFIG.value_of("rate").unwrap();
+        let rate = rate.parse().unwrap();
+        let threshold = 4;
+
         let in_format = cpal::Format {
             channels: 1,
-            sample_rate: cpal::SampleRate(2048),
+            sample_rate: cpal::SampleRate(rate),
             data_type: cpal::SampleFormat::I16,
         }; 
 
@@ -161,7 +179,7 @@ fn main() {
                 debug!("Muted_count is {}", muted_count);
             }
 
-            if muted_count > 32 && sign_state{
+            if muted_count > threshold && sign_state{
                 match tasmota_set_state(&tasmota, false){
                     Ok(out_state) => {
                         sign_state = out_state;
@@ -170,7 +188,7 @@ fn main() {
                     Err(_) =>()
                 }
                 
-            }else if muted_count < 32 &&!sign_state{
+            }else if muted_count < threshold &&!sign_state{
                 match tasmota_set_state(&tasmota, true){
                     Ok(out_state) => {
                         sign_state = out_state;
