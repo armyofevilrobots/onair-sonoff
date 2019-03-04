@@ -130,7 +130,7 @@ fn main() {
 
         let event_loop = EventLoop::new();
         let mut device = cpal::default_input_device().expect("Nope!");
-        let preferred_device_name = config::CONFIG.value_of("device").unwrap(); //_or("default");
+        let preferred_device_name = config::CONFIG.value_of("device").unwrap_or("default");
         info!("Searching for device {}", preferred_device_name);
         if preferred_device_name != "default"{
             let devices = iterate_devices();
