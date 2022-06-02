@@ -147,7 +147,7 @@ fn main() {
         // }
         let rate = config::CONFIG.value_of("rate").unwrap();
         let rate = rate.parse().unwrap();
-        let threshold = 4;
+        let threshold = 16;
 
         let in_format = cpal::Format {
             channels: 1,
@@ -162,11 +162,11 @@ fn main() {
         event_loop.run(move |_stream_id, mut stream_data| {
             let now = SystemTime::now();
             muted_count = (muted_count+1);
-            if muted_count > 1024 { muted_count = 512 }
+            if muted_count > 1024 { muted_count = 1024 }
             match(stream_data){
                 cpal::StreamData::Input{ buffer: cpal::UnknownTypeInputBuffer::I16(mut buffer) } => {
                     for elem in buffer.iter(){
-                        if cpal::Sample::to_i16(elem) != 0 {
+                        if cpal::Sample::to_i16(elem).abs() >= 2 {
                             muted_count = 0;
                         }
                     }
@@ -175,7 +175,7 @@ fn main() {
                     info!("Unmuted.")
                 }
             }
-            if muted_count>16 && (muted_count % 32) == 0{
+            if muted_count > 16 && (muted_count % 32) == 0{
                 debug!("Muted_count is {}", muted_count);
             }
 
@@ -187,8 +187,7 @@ fn main() {
                     },
                     Err(_) =>()
                 }
-                
-            }else if muted_count < threshold &&!sign_state{
+            }else if muted_count < threshold && !sign_state{
                 match tasmota_set_state(&tasmota, true){
                     Ok(out_state) => {
                         sign_state = out_state;
@@ -196,7 +195,6 @@ fn main() {
                     },
                     Err(_) =>()
                 }
-                
             }
             //sleep(delay_time);
             match now.elapsed() {

@@ -4,6 +4,9 @@ version = "0.0.2"
 authors = ["Derek Anderson <derek@armyofevilrobots.com>"]
 edition = "2018"
 
+[profile.release]
+lto = true
+
 [dependencies]
 clap = "2.29"
 lazy_static = ">=1.2.0"
@@ -23,6 +26,14 @@ mdns="0.3.1"
 url="1.7.2"
 dns-lookup="1.0.0"
 cpal = "0.8.2"
+
+[dependencies.gtk]
+version = "0.6.0"
+features = ["v3_16"]
+
+[dependencies.gio]
+version = ""
+features = ["v2_44"]
 
 #[patch.crates-io]
 #cpal = {path="cpal"}
